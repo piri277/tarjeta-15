@@ -1,0 +1,823 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Angelina XV Party</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Poppins:wght@400;500;600&display=swap">
+<style>
+/* Concepto: pizarra negra, papel claro y rosa fuerte, como la invitación de Angelina.
+   Primero un sobre blanco perlado con forro rosa y sello de bola disco plateada.
+   Al abrirlo, la portada sale del sobre y se acomoda como inicio de la invitación completa.
+   El sobre se dimensiona desde --w; la invitación es una sola columna pensada para celular. */
+:root {
+  --ink: #060606;
+  --ink-2: #131313;
+  --paper: #e9e9e7;
+  --white: #fbfbfa;
+  --silver: #c8c9cc;
+  --pink: #ff0094;
+  --pink-hi: #ff4db8;
+  --pink-lo: #c2006f;
+
+  --font-display: 'Italiana', 'Didot', 'Bodoni 72', Georgia, serif;
+  --font-ui: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --w: min(88vw, 440px, calc((100dvh - 140px) / 1.25));
+  --h: calc(var(--w) * 2 / 3);
+  --gut: max(24px, env(safe-area-inset-left, 0px));
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--ink); -webkit-text-size-adjust: 100%; }
+html.locked, html.locked body { overflow: hidden; height: 100%; }
+body {
+  margin: 0;
+  padding-left: max(0px, env(safe-area-inset-left, 0px));
+  padding-right: max(0px, env(safe-area-inset-right, 0px));
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; height: auto; }
+
+/* ---------- Fondo fijo ---------- */
+.room {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 50% 46%, rgba(255, 0, 148, .12), transparent 72%),
+    linear-gradient(rgba(0, 0, 0, .35), rgba(0, 0, 0, .35)),
+    var(--ink) url(assets/chalk.webp) center / cover no-repeat;
+}
+#lights, #burst { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#lights { z-index: 1; opacity: 0; transition: opacity 1.8s ease; }
+#lights.on { opacity: 1; }
+#burst { z-index: 70; }
+
+/* =====================================================
+   INTRO: EL SOBRE
+   ===================================================== */
+.intro {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.intro[hidden] { display: none !important; }
+.intro.is-leaving { pointer-events: none; }
+.intro.no-anim, .intro.no-anim * { transition: none !important; }
+
+.scene {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  transition: transform 1.3s cubic-bezier(.45, 0, .2, 1) .55s;
+  animation: enter 1s cubic-bezier(.2, .7, .2, 1) backwards;
+}
+.scene.is-open { transform: translateY(calc(var(--h) * .375 - 23px)); transition-delay: .25s; }
+@keyframes enter { from { transform: translateY(18px); } }
+
+.eyebrow {
+  margin: 0 0 40px;
+  display: flex; align-items: center; gap: 14px;
+  font-size: 11px; font-weight: 500; letter-spacing: .36em; text-transform: uppercase;
+  color: rgba(251, 251, 250, .88);
+  transition: opacity .5s ease;
+}
+.eyebrow::before, .eyebrow::after {
+  content: ""; width: 26px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pink));
+}
+.eyebrow::after { transform: scaleX(-1); }
+.scene.is-opening .eyebrow, .intro.is-leaving .eyebrow { opacity: 0; }
+
+.float { width: var(--w); height: var(--h); animation: float 6s ease-in-out infinite alternate; }
+.scene.is-open .float { animation-play-state: paused; }
+@keyframes float { to { transform: translateY(-6px); } }
+
+.leave { width: 100%; height: 100%; }
+.intro.is-leaving .leave {
+  transform: translateY(62vh) rotate(-4deg); opacity: 0;
+  transition: transform 1.05s cubic-bezier(.55, 0, .75, .4), opacity .9s ease .1s;
+}
+
+.stage { position: relative; width: 100%; height: 100%; perspective: 1200px; }
+.stage::after {
+  content: ""; position: absolute; z-index: -1;
+  left: 2%; right: 2%; bottom: -34px; height: 40px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 0, 148, .45), transparent 72%);
+  filter: blur(8px);
+}
+
+/* Interior del sobre: rosa con rejilla de espejos */
+.back {
+  position: absolute; inset: 0; z-index: 0; border-radius: 2px;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, .08) 0 1px, transparent 1px 13px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, .08) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, #9a0058, #4f002e);
+  box-shadow: 0 30px 60px -22px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .22);
+}
+
+/* Frente del sobre: papel blanco perlado */
+.pocket { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; border-radius: 2px; }
+.facet { position: absolute; inset: 0; background-blend-mode: multiply; background-size: 440px auto, 100% 100%; }
+.facet.l {
+  clip-path: polygon(0 0, 50% 54%, 0 100%);
+  background-image: url(assets/papel.webp), linear-gradient(105deg, #ffffff 0%, #f0f0ee 70%, #e6e6e3 100%);
+}
+.facet.r {
+  clip-path: polygon(100% 0, 50% 54%, 100% 100%);
+  background-image: url(assets/papel.webp), linear-gradient(255deg, #ececea 0%, #dcdcd9 70%, #d0d0cd 100%);
+}
+.facet.b {
+  clip-path: polygon(0 100%, 50% 54%, 100% 100%);
+  background-image: url(assets/papel.webp), linear-gradient(180deg, #ffffff 0%, #efefed 48%, #dededa 100%);
+}
+.folds { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.folds path { fill: none; stroke: rgba(30, 30, 30, .3); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.folds .edge { stroke: rgba(0, 0, 0, .18); }
+.stamp {
+  position: absolute; left: 0; right: 0; bottom: 4.5%; margin: 0;
+  display: flex; flex-direction: column; align-items: center; gap: calc(var(--w) * .008);
+  line-height: 1;
+}
+.st-name { font-family: var(--font-display); font-size: calc(var(--w) * .058); letter-spacing: .06em; text-transform: uppercase; color: #111; }
+.st-sub { font-size: calc(var(--w) * .022); font-weight: 600; letter-spacing: .44em; text-transform: uppercase; color: var(--pink); padding-left: .44em; }
+
+/* Solapa */
+.flap {
+  position: absolute; left: 0; top: 0; width: 100%; height: 62%; z-index: 5;
+  transform-origin: 50% 0; transform-style: preserve-3d;
+  transition: transform .95s cubic-bezier(.45, .05, .2, 1) .7s, z-index 0s linear 1.175s;
+}
+.scene.is-open .flap {
+  transform: rotateX(180deg); z-index: 1;
+  transition: transform .95s cubic-bezier(.45, .05, .2, 1) 0s, z-index 0s linear .475s;
+}
+.flap-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flap-face.front {
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background-color: #f4f4f2;
+  background-image:
+    url(assets/papel.webp),
+    linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .75) 48%, rgba(255, 255, 255, 0) 62%),
+    linear-gradient(180deg, #fafaf9 0%, #e8e8e5 55%, #d6d6d2 100%);
+  background-size: 440px auto, 100% 100%, 100% 100%;
+  background-blend-mode: multiply, normal, normal;
+}
+.flap-face.back {
+  transform: rotateX(180deg);
+  clip-path: polygon(0 100%, 100% 100%, 50% 0);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, .42) 50%, rgba(255, 255, 255, 0) 62%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, .2) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, .2) 0 1px, transparent 1px 14px),
+    linear-gradient(180deg, #ff2aa6, #ff0094 55%, #d4007a);
+}
+.flap-face svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.flap-face path { fill: none; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.flap-face.front .line { stroke: rgba(30, 30, 30, .32); }
+.flap-face.front .inset { stroke: var(--pink); opacity: .8; }
+.flap-face.back path { stroke: rgba(255, 255, 255, .4); }
+
+.flap-shadow {
+  position: absolute; left: 0; top: 0; width: 100%; height: 62%; z-index: 4;
+  filter: blur(7px); transform: translateY(9px); opacity: .4;
+  transition: opacity .3s ease .6s;
+}
+.flap-shadow i { display: block; width: 100%; height: 100%; background: #000; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.scene.is-open .flap-shadow { opacity: 0; transition: opacity .2s ease 0s; }
+
+/* Sello: bola disco */
+.seal-slot {
+  --s: calc(var(--w) * .2);
+  position: absolute; z-index: 6;
+  left: 50%; top: 62%; width: var(--s); height: var(--s);
+  margin: calc(var(--s) * -.5) 0 0 calc(var(--s) * -.5);
+}
+.seal {
+  position: relative; display: block; width: 100%; height: 100%;
+  padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .25s ease;
+}
+.seal:hover { transform: scale(1.05); }
+.seal:disabled { cursor: default; }
+.seal canvas {
+  display: block; width: 100%; height: 100%; border-radius: 50%;
+  box-shadow: 0 12px 18px -4px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .55), 0 0 26px rgba(255, 0, 148, .45);
+}
+.seal::before, .seal::after {
+  content: ""; position: absolute; inset: -4%; border-radius: 50%; pointer-events: none;
+  border: 1px solid rgba(255, 0, 148, .85);
+  opacity: 0; animation: ring 2.8s ease-out infinite;
+}
+.seal::after { animation-delay: 1.4s; }
+@keyframes ring {
+  0% { transform: scale(.92); opacity: 0; }
+  18% { opacity: .85; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+.seal:focus-visible { outline: 2px solid var(--pink); outline-offset: 7px; }
+
+.seal-slot::before, .seal-slot::after {
+  content: ""; position: absolute; pointer-events: none; z-index: 2;
+  background: #fff;
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  animation: twinkle 3.4s ease-in-out infinite;
+  transition: opacity .3s ease;
+}
+.seal-slot::before { width: 34%; height: 34%; right: -22%; top: -20%; }
+.seal-slot::after { width: 22%; height: 22%; left: -18%; bottom: -14%; background: var(--pink-hi); animation-delay: 1.5s; }
+@keyframes twinkle {
+  0%, 100% { transform: scale(.2) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1) rotate(45deg); opacity: 1; }
+}
+.scene.is-opening .seal-slot::before, .scene.is-opening .seal-slot::after { opacity: 0; animation: none; }
+.scene.is-opening .seal { animation: seal-pop .55s cubic-bezier(.3, .7, .2, 1) forwards; }
+.scene.is-opening .seal::before, .scene.is-opening .seal::after { animation: none; opacity: 0; }
+@keyframes seal-pop {
+  0% { transform: scale(1); opacity: 1; }
+  30% { transform: scale(1.22) rotate(-6deg); opacity: 1; }
+  100% { transform: translateY(46%) scale(.55) rotate(28deg); opacity: 0; }
+}
+
+/* Portada dentro del sobre */
+.card-clip { position: absolute; inset: 0; z-index: 2; pointer-events: none; clip-path: inset(-100vh -50vw 2px -50vw); }
+.card {
+  position: absolute; left: 11%; width: 78%; top: calc(var(--h) * .08);
+  transform: translateY(0);
+  transition: transform .9s cubic-bezier(.5, 0, .3, 1) 0s;
+}
+.card img { width: 100%; height: auto; filter: drop-shadow(0 20px 22px rgba(0, 0, 0, .55)); }
+.scene.is-open .card {
+  transform: translateY(calc(var(--h) * -.83));
+  transition: transform 1.25s cubic-bezier(.2, .85, .25, 1) .8s;
+}
+
+/* Texto inferior */
+.caption { display: grid; place-items: center; margin-top: 34px; min-height: 28px; }
+.hint {
+  margin: 0; font-family: var(--font-display); font-size: 20px; letter-spacing: .04em;
+  color: rgba(251, 251, 250, .88); transition: opacity .5s ease;
+}
+.scene.is-opening .hint, .intro.is-leaving .hint { opacity: 0; }
+
+/* Portada en vuelo hacia la invitación */
+.fly { position: fixed; left: 0; top: 0; z-index: 60; transform-origin: 0 0; pointer-events: none; max-width: none; }
+
+/* =====================================================
+   INVITACIÓN COMPLETA
+   ===================================================== */
+.inv { position: relative; z-index: 5; }
+.inv.is-hidden { visibility: hidden; }
+
+.sec {
+  position: relative;
+  padding: clamp(56px, 15vw, 92px) var(--gut);
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+  text-align: center;
+}
+.sec.paper {
+  color: #0a0a0a;
+  background: #e9e9e7 url(assets/papel.webp) center / cover;
+}
+.sec.dark { color: var(--white); }
+
+.h2 {
+  margin: 0;
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(29px, 8.6vw, 40px); line-height: 1.12; letter-spacing: .04em; text-transform: uppercase;
+  text-wrap: balance;
+}
+.p {
+  margin: 18px auto 0; max-width: 30ch;
+  font-size: clamp(15.5px, 4.3vw, 18px); line-height: 1.62; font-weight: 400;
+}
+
+/* Portada */
+.hero {
+  min-height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px));
+}
+.hero img {
+  width: min(86vw, 430px, calc((100svh - 150px) * .8675));
+  opacity: 0;
+}
+.hero img.shown { opacity: 1; }
+.cue {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 500; letter-spacing: .34em; text-transform: uppercase;
+  color: rgba(251, 251, 250, .75); padding-left: .34em;
+  opacity: 0; transition: opacity .8s ease .3s;
+}
+.inv.is-ready .cue { opacity: 1; }
+.cue svg { width: 18px; height: 18px; stroke: var(--pink); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; animation: nudge 1.8s ease-in-out infinite; }
+@keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+/* Mensaje */
+.art { position: relative; width: min(84vw, 360px); margin: 0 auto 34px; display: flex; justify-content: center; }
+.art .baby { width: 72%; }
+.star { position: absolute; width: 46px; height: auto; animation: star 5s ease-in-out infinite alternate; }
+.star.s1 { left: 0; top: 4%; width: 44px; transform: rotate(-14deg); }
+.star.s2 { right: 6%; top: -4%; width: 34px; transform: rotate(12deg); animation-delay: .8s; }
+.star.s3 { right: -2%; top: 46%; width: 54px; transform: rotate(18deg); animation-delay: 1.6s; }
+.star.s4 { left: 2%; bottom: 6%; width: 38px; transform: rotate(8deg); animation-delay: 2.2s; }
+.star.s5 { right: 12%; bottom: -4%; width: 40px; transform: rotate(-10deg); animation-delay: 3s; }
+@keyframes star { to { translate: 0 -6px; scale: 1.06; } }
+
+/* Recepción */
+.rec {
+  position: relative; width: min(100%, 400px); margin: 0 auto;
+  background: #fff; color: #0a0a0a;
+  box-shadow: 0 34px 60px -24px rgba(0, 0, 0, .85);
+  padding: 0 24px 40px;
+}
+.rec .disco { width: 56%; margin: 0 auto 6px; }
+.rec .p { max-width: none; margin-top: 16px; color: #0a0a0a; }
+.rec .when { margin: 14px 0 0; font-size: clamp(17px, 4.8vw, 20px); font-weight: 500; line-height: 1.5; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 48px; padding: 0 26px; margin-top: 26px;
+  border: 0; border-radius: 999px; background: #000; color: #fff; text-decoration: none; cursor: pointer;
+  font: 600 14px/1 var(--font-ui); letter-spacing: .01em;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .7);
+  transition: transform .2s ease, background-color .2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(.97); }
+.btn:hover { background: #1b1b1b; }
+.btn:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn .pin { fill: var(--pink); }
+.btn .wa { fill: #fff; }
+
+/* Vestimenta */
+.sub { margin: 18px 0 0; font-size: clamp(15px, 4.2vw, 18px); font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+.ropa { width: min(76vw, 320px); margin: 22px auto 0; }
+.full-rule { position: relative; left: 50%; width: 100vw; height: 2px; margin-top: 44px; background: #000; transform: translateX(-50%); }
+.color { margin: 30px 0 0; font-size: clamp(15.5px, 4.3vw, 18px); font-weight: 500; }
+.swatch {
+  width: 58px; height: 58px; margin: 18px auto 0; border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #fff 0, #eceef2 20%, #b8bac2 55%, #7d7f88 100%);
+  box-shadow: inset 0 -5px 9px rgba(0, 0, 0, .25), 0 10px 20px -10px rgba(0, 0, 0, .6);
+}
+
+/* Regalos */
+.gift { position: relative; width: min(60vw, 270px); margin: 30px auto 0; }
+.gift::before {
+  content: ""; position: absolute; inset: -26% -30%; z-index: -1;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 0, 148, .24), transparent 70%);
+}
+.gift img { filter: drop-shadow(0 26px 28px rgba(0, 0, 0, .65)); animation: sway 6s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-2deg); } to { transform: rotate(2deg) translateY(-4px); } }
+.dark .p.big { max-width: none; margin-top: 34px; font-size: clamp(17px, 4.8vw, 20px); }
+
+/* Confirmación */
+.arrow { width: 66px; margin: 22px auto 0; }
+.foot {
+  padding: 34px var(--gut) calc(34px + env(safe-area-inset-bottom, 0px));
+  text-align: center; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: rgba(251, 251, 250, .7);
+}
+.foot p { margin: 0; }
+.replay {
+  margin-top: 14px; padding: 12px 18px; min-height: 44px;
+  background: none; border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px; cursor: pointer;
+  color: rgba(251, 251, 250, .85); font: 500 11px/1 var(--font-ui); letter-spacing: .24em; text-transform: uppercase;
+}
+.replay:hover { border-color: var(--pink); }
+.replay:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
+
+/* Entrada suave al hacer scroll (si el navegador lo soporta; sin soporte todo queda visible) */
+@supports (animation-timeline: view()) {
+  .rv { animation: rise-in linear both; animation-timeline: view(); animation-range: entry 0% entry 55%; }
+  @keyframes rise-in { from { opacity: .25; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important;
+    transition-duration: .01ms !important; transition-delay: 0s !important;
+  }
+  .rv { animation: none !important; }
+}
+</style>
+
+<div class="room" aria-hidden="true"></div>
+<canvas id="lights" aria-hidden="true"></canvas>
+<canvas id="burst" aria-hidden="true"></canvas>
+
+<!-- ================= SOBRE ================= -->
+<div class="intro" id="intro">
+  <main class="scene" id="scene">
+    <p class="eyebrow">Tienes una invitación</p>
+
+    <div class="float">
+      <div class="leave">
+        <div class="stage">
+          <div class="back"></div>
+
+          <div class="card-clip">
+            <div class="card" id="card">
+              <img id="cardImg" src="assets/portada.webp" alt="Angelina Party, quince años" width="1100" height="1268">
+            </div>
+          </div>
+
+          <div class="flap" aria-hidden="true">
+            <div class="flap-face front">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path class="line" d="M0 0 L50 100 L100 0"/>
+                <path class="inset" d="M11.5 7 L50 84 L88.5 7 Z"/>
+              </svg>
+            </div>
+            <div class="flap-face back">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0 100 L50 0 L100 100"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="pocket" aria-hidden="true">
+            <div class="facet l"></div>
+            <div class="facet r"></div>
+            <div class="facet b"></div>
+            <svg class="folds" viewBox="0 0 300 200" preserveAspectRatio="none">
+              <path d="M0 200 L150 108 L300 200"/>
+              <path d="M0 0 L150 108"/>
+              <path d="M300 0 L150 108"/>
+              <path class="edge" d="M.5 0 L.5 199.5 L299.5 199.5 L299.5 0"/>
+            </svg>
+            <p class="stamp"><span class="st-name">Angelina</span><span class="st-sub">XV años</span></p>
+          </div>
+
+          <div class="flap-shadow" aria-hidden="true"><i></i></div>
+
+          <div class="seal-slot">
+            <button class="seal" id="seal" type="button" aria-label="Abrir la invitación">
+              <canvas id="sealCanvas" width="140" height="140"></canvas>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption" aria-live="polite">
+      <p class="hint">Toca el sello para abrir</p>
+    </div>
+  </main>
+</div>
+
+<!-- ================= INVITACIÓN ================= -->
+<div class="inv is-hidden" id="inv">
+
+  <section class="sec dark hero" aria-label="Portada">
+    <img id="heroImg" src="assets/portada.webp" alt="Angelina Party, quince años" width="1100" height="1268">
+    <div class="cue" aria-hidden="true">
+      <span>Desliza</span>
+      <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </section>
+
+  <section class="sec paper" aria-labelledby="t-msg">
+    <div class="art rv">
+      <img class="star s1" src="assets/estrella.webp" alt="" width="164" height="160">
+      <img class="star s2" src="assets/estrella.webp" alt="" width="164" height="160">
+      <img class="star s3" src="assets/estrella.webp" alt="" width="164" height="160">
+      <img class="star s4" src="assets/estrella.webp" alt="" width="164" height="160">
+      <img class="star s5" src="assets/estrella.webp" alt="" width="164" height="160">
+      <img class="baby" src="assets/bebe.webp" alt="Angelina de bebé, en blanco y negro" width="528" height="882">
+    </div>
+    <h2 class="h2 rv" id="t-msg">Quince años, mil sueños por cumplir</h2>
+    <p class="p rv">Quince años de sueños, sonrisas y momentos inolvidables. Hoy comienza una nueva etapa llena de ilusiones, y quiero compartir esta alegría con las personas que hacen mi vida especial.</p>
+  </section>
+
+  <section class="sec dark" aria-labelledby="t-rec">
+    <div class="rec rv">
+      <img class="disco" src="assets/disco.webp" alt="" width="520" height="272">
+      <h2 class="h2" id="t-rec">Recepción</h2>
+      <p class="p">Calle 26 # 25-61<br>Siete de Agosto</p>
+      <p class="when">28 de noviembre<br>Hora 7:00 pm</p>
+      <a class="btn" id="mapBtn" target="_blank" rel="noopener"
+         href="https://www.google.com/maps/search/?api=1&query=Calle%2026%20%2325-61%20Siete%20de%20Agosto">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pin" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+        Ver ubicación
+      </a>
+    </div>
+  </section>
+
+  <section class="sec paper" aria-labelledby="t-dress">
+    <h2 class="h2 rv" id="t-dress">Código de vestimenta</h2>
+    <p class="sub rv">Elegante · Formal</p>
+    <img class="ropa rv" src="assets/ropa.webp" alt="Traje negro y vestido dorado" width="600" height="450">
+    <p class="p rv">Te invitamos a lucir tu mejor atuendo para compartir esta noche tan especial.</p>
+    <div class="full-rule" aria-hidden="true"></div>
+    <p class="color rv">Color reservado: Plateado</p>
+    <div class="swatch" role="img" aria-label="Color plateado"></div>
+  </section>
+
+  <section class="sec dark" aria-labelledby="t-gift">
+    <h2 class="h2 rv" id="t-gift">Mesa de regalos</h2>
+    <div class="gift rv"><img src="assets/sobre.webp" alt="Un sobre blanco" width="760" height="587"></div>
+    <p class="p big rv">¡Lluvia de sobres!</p>
+  </section>
+
+  <section class="sec paper" aria-labelledby="t-rsvp">
+    <h2 class="h2 rv" id="t-rsvp">¡Confirma tu asistencia!</h2>
+    <p class="p rv">Envíanos un mensaje por WhatsApp dando clic al botón “Confirmar asistencia”.</p>
+    <img class="arrow rv" src="assets/flecha.webp" alt="" width="193" height="451">
+    <a class="btn rv" id="waBtn" target="_blank" rel="noopener" href="https://wa.me/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="wa" d="M12.04 2a9.9 9.9 0 0 0-8.5 14.95L2 22l5.2-1.5A9.9 9.9 0 1 0 12.04 2zm0 1.8a8.1 8.1 0 1 1-4.3 14.96l-.3-.18-3 .87.9-2.93-.2-.31A8.1 8.1 0 0 1 12.04 3.8zm-3 3.7c-.2 0-.5.07-.75.35-.26.28-1 1-1 2.4s1.03 2.8 1.18 3c.14.2 2 3.2 4.95 4.35 2.45.97 2.95.78 3.48.73.53-.05 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.38-.07-.12-.27-.2-.56-.34-.3-.15-1.7-.84-1.97-.94-.26-.1-.46-.15-.65.15-.2.3-.75.94-.92 1.13-.17.2-.34.22-.63.07-.3-.15-1.24-.46-2.36-1.46-.87-.78-1.46-1.74-1.63-2.04-.17-.3-.02-.46.13-.6.13-.14.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.65-1.6-.9-2.18-.23-.56-.47-.48-.65-.49h-.55z"/></svg>
+      Confirmar asistencia
+    </a>
+  </section>
+
+  <footer class="sec dark foot">
+    <p>Angelina · XV años · 28 de noviembre</p>
+    <button class="replay" id="replay" type="button">Ver el sobre otra vez</button>
+  </footer>
+</div>
+
+<script>
+(() => {
+  /* ===== Datos que puedes cambiar ===== */
+  const WHATSAPP = '';   // número con indicativo, solo dígitos. Ejemplo: 573001234567
+  const MENSAJE = '¡Hola! Confirmo mi asistencia a los XV años de Angelina el 28 de noviembre. 🎉';
+  /* ==================================== */
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (id) => document.getElementById(id);
+  const html = document.documentElement;
+  const intro = $('intro'), scene = $('scene'), seal = $('seal'), sealCanvas = $('sealCanvas');
+  const inv = $('inv'), heroImg = $('heroImg'), cardImg = $('cardImg');
+  const lightsCv = $('lights'), burstCv = $('burst');
+  const sctx = sealCanvas.getContext('2d'), lctx = lightsCv.getContext('2d'), bctx = burstCv.getContext('2d');
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let vw = 0, vh = 0, sealPx = 140;
+  let state = 'closed';
+  let ballOn = true;
+  let timers = [];
+  const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
+
+  html.classList.add('locked');
+  $('waBtn').href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(MENSAJE);
+
+  /* ---- Utilidades ---- */
+  const clamp255 = (n) => Math.max(0, Math.min(255, n | 0));
+  const hash = (i, j) => { const x = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return x - Math.floor(x); };
+  function star(ctx, x, y, r, rot) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const rr = i % 2 ? r * .28 : r, a = i * Math.PI / 4;
+      ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+
+  /* ---- Bola disco (sello) ---- */
+  const LV = (() => { const v = [-.45, -.65, .62], m = Math.hypot(v[0], v[1], v[2]); return v.map((c) => c / m); })();
+  function drawBall(ctx, S, t) {
+    const R = S / 2 - S * .025, c = S / 2;
+    const tilt = .42, ct = Math.cos(tilt), st = Math.sin(tilt);
+    const rows = 10, rot = t * .00032;
+    ctx.clearRect(0, 0, S, S);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2); ctx.clip();
+    ctx.fillStyle = '#101010'; ctx.fillRect(0, 0, S, S);
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = Math.max(.7, S / 150);
+    ctx.strokeStyle = 'rgba(8,8,8,.7)';
+    const pt = (lat, lon) => {
+      const cl = Math.cos(lat), x = cl * Math.sin(lon), y = -Math.sin(lat), z = cl * Math.cos(lon);
+      return { x, y: y * ct - z * st, z: y * st + z * ct };
+    };
+    for (let i = 0; i < rows; i++) {
+      const lat0 = -Math.PI / 2 + i * Math.PI / rows, lat1 = lat0 + Math.PI / rows, latc = (lat0 + lat1) / 2;
+      const n = Math.max(5, Math.round(Math.cos(latc) * 22)), step = Math.PI * 2 / n;
+      for (let j = 0; j < n; j++) {
+        const lon0 = rot + j * step, lon1 = lon0 + step, lonc = lon0 + step / 2;
+        const m = pt(latc, lonc);
+        if (m.z < 0) continue;
+        const rnd = hash(i, j);
+        const b = Math.max(0, m.x * LV[0] + m.y * LV[1] + m.z * LV[2]);
+        let v = .16 + b * .6 + (rnd - .5) * .34;
+        if (Math.sin(t * .0035 + rnd * 60) > .975) v = 1.2;
+        v *= .5 + .5 * m.z;
+        v = Math.max(0, Math.min(1.25, v));
+        const base = 26 + v * 212;
+        let r = base, g = base, bl = base * 1.03;
+        if (rnd > .9) { r = 60 + v * 195; g = v * 30; bl = 40 + v * 125; }   // fichas rosa
+        const p1 = pt(lat0, lon0), p2 = pt(lat0, lon1), p3 = pt(lat1, lon1), p4 = pt(lat1, lon0);
+        ctx.beginPath();
+        ctx.moveTo(c + p1.x * R, c + p1.y * R);
+        ctx.lineTo(c + p2.x * R, c + p2.y * R);
+        ctx.lineTo(c + p3.x * R, c + p3.y * R);
+        ctx.lineTo(c + p4.x * R, c + p4.y * R);
+        ctx.closePath();
+        ctx.fillStyle = 'rgb(' + clamp255(r) + ',' + clamp255(g) + ',' + clamp255(bl) + ')';
+        ctx.fill(); ctx.stroke();
+      }
+    }
+    let g = ctx.createRadialGradient(c - R * .38, c - R * .42, R * .02, c - R * .3, c - R * .34, R * .7);
+    g.addColorStop(0, 'rgba(255,255,255,.6)'); g.addColorStop(.35, 'rgba(255,255,255,.13)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+    g = ctx.createRadialGradient(c, c, R * .55, c, c, R);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.55)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+    g = ctx.createRadialGradient(c + R * .5, c + R * .55, 0, c + R * .5, c + R * .55, R * .7);
+    g.addColorStop(0, 'rgba(255,0,148,.32)'); g.addColorStop(1, 'rgba(255,0,148,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(c, c, R, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = Math.max(1, S / 90); ctx.stroke();
+  }
+
+  /* ---- Luces de la sala ---- */
+  function sprite(kind, rgb) {
+    const s = 64, c = document.createElement('canvas'); c.width = c.height = s;
+    const x = c.getContext('2d'), col = rgb.join(',');
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, 'rgba(' + col + ',.9)'); g.addColorStop(.25, 'rgba(' + col + ',.32)'); g.addColorStop(1, 'rgba(' + col + ',0)');
+    x.fillStyle = g; x.fillRect(0, 0, s, s);
+    x.fillStyle = 'rgba(255,255,255,.95)';
+    if (kind === 'diamond') {
+      x.beginPath(); x.moveTo(32, 22); x.lineTo(42, 32); x.lineTo(32, 42); x.lineTo(22, 32); x.closePath(); x.fill();
+    } else if (kind === 'star') {
+      star(x, 32, 32, 15, 0);
+    } else {
+      x.beginPath(); x.arc(32, 32, 3, 0, Math.PI * 2); x.fill();
+    }
+    return c;
+  }
+  const palette = [[255, 0, 148], [235, 236, 240], [255, 140, 205]];
+  const sprites = [];
+  ['diamond', 'star', 'dot'].forEach((k) => palette.forEach((p) => sprites.push(sprite(k, p))));
+  const lightsArr = Array.from({ length: 36 }, () => ({
+    x: Math.random(), y: Math.random(),
+    vx: .004 + Math.random() * .014,
+    s: 8 + Math.random() * 26,
+    a: .14 + Math.random() * .4,
+    f: .6 + Math.random() * 1.6, fy: .2 + Math.random() * .5, ph: Math.random() * 6.28,
+    img: sprites[(Math.random() * sprites.length) | 0]
+  }));
+  function drawLights(t) {
+    lctx.clearRect(0, 0, vw, vh);
+    const sec = t / 1000;
+    for (const o of lightsArr) {
+      const x = (((o.x + o.vx * sec) % 1) + 1) % 1;
+      const y = o.y + Math.sin(sec * o.fy + o.ph) * .012;
+      const tw = reduce ? .7 : .35 + .65 * (.5 + .5 * Math.sin(sec * o.f + o.ph));
+      lctx.globalAlpha = o.a * tw;
+      lctx.drawImage(o.img, x * vw - o.s / 2, y * vh - o.s / 2, o.s, o.s);
+    }
+    lctx.globalAlpha = 1;
+  }
+
+  /* ---- Destellos al romper el sello ---- */
+  const parts = []; let flash = null, burstDirty = false;
+  function doBurst(cx, cy) {
+    flash = { x: cx, y: cy, t: 0 };
+    const cols = ['#ff0094', '#ff4db8', '#ffffff', '#dfe0e3', '#ffb3df'];
+    for (let i = 0; i < 44; i++) {
+      const a = Math.random() * Math.PI * 2, sp = 90 + Math.random() * 320;
+      parts.push({
+        x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 60,
+        s: 3 + Math.random() * 7, life: 0, max: .9 + Math.random() * .9,
+        rot: Math.random() * 3, vr: (Math.random() - .5) * 6, c: cols[i % cols.length], sq: Math.random() > .6
+      });
+    }
+  }
+  function drawBurst(dt) {
+    bctx.clearRect(0, 0, vw, vh);
+    if (flash) {
+      flash.t += dt;
+      const k = flash.t / .45;
+      if (k >= 1) flash = null;
+      else {
+        const r = 30 + k * 140;
+        const g = bctx.createRadialGradient(flash.x, flash.y, 0, flash.x, flash.y, r);
+        g.addColorStop(0, 'rgba(255,225,245,' + (.8 * (1 - k)) + ')'); g.addColorStop(1, 'rgba(255,0,148,0)');
+        bctx.fillStyle = g; bctx.beginPath(); bctx.arc(flash.x, flash.y, r, 0, Math.PI * 2); bctx.fill();
+      }
+    }
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.life += dt;
+      if (p.life >= p.max) { parts.splice(i, 1); continue; }
+      p.vy += 300 * dt; p.vx *= 1 - 1.6 * dt; p.vy *= 1 - .8 * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+      bctx.globalAlpha = Math.pow(1 - p.life / p.max, 1.2);
+      bctx.fillStyle = p.c;
+      if (p.sq) { bctx.save(); bctx.translate(p.x, p.y); bctx.rotate(p.rot); bctx.fillRect(-p.s / 3, -p.s / 3, p.s * .66, p.s * .66); bctx.restore(); }
+      else star(bctx, p.x, p.y, p.s, p.rot);
+    }
+    bctx.globalAlpha = 1;
+  }
+
+  /* ---- Tamaños ---- */
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    vw = window.innerWidth; vh = window.innerHeight;
+    [lightsCv, burstCv].forEach((c) => { c.width = Math.round(vw * dpr); c.height = Math.round(vh * dpr); });
+    lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sealPx = Math.max(48, Math.round((sealCanvas.offsetWidth || 70) * dpr));
+    sealCanvas.width = sealCanvas.height = sealPx;
+    if (reduce) { drawLights(0); drawBall(sctx, sealPx, 0); }
+  }
+  window.addEventListener('resize', size);
+  size();
+  requestAnimationFrame(() => lightsCv.classList.add('on'));
+
+  /* ---- Bucle ---- */
+  if (!reduce) {
+    const t0 = performance.now(); let last = t0;
+    const loop = (now) => {
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      if (!document.hidden) {
+        drawLights(now - t0);
+        if (ballOn) drawBall(sctx, sealPx, now);
+        if (parts.length || flash) { drawBurst(dt); burstDirty = true; }
+        else if (burstDirty) { bctx.clearRect(0, 0, vw, vh); burstDirty = false; }
+      }
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  /* ---- Abrir el sobre ---- */
+  function open() {
+    if (state !== 'closed') return;
+    state = 'opening';
+    scene.classList.add('is-opening');
+    const r = seal.getBoundingClientRect();
+    if (!reduce) later(() => doBurst(r.left + r.width / 2, r.top + r.height / 2), 130);
+    later(() => scene.classList.add('is-open'), reduce ? 0 : 380);
+    later(() => {
+      state = 'open'; ballOn = false;
+      seal.disabled = true; seal.setAttribute('aria-hidden', 'true');
+      later(reveal, reduce ? 0 : 1200);       // pausa breve para ver la portada asomando
+    }, reduce ? 60 : 2600);
+  }
+
+  /* ---- Transición: la portada sale del sobre y se vuelve el inicio de la invitación ---- */
+  function reveal() {
+    if (state !== 'open') return;
+    state = 'revealing';
+    const from = cardImg.getBoundingClientRect();
+    const to = heroImg.getBoundingClientRect();
+    const fly = cardImg.cloneNode(false);
+    fly.removeAttribute('id');
+    fly.className = 'fly';
+    fly.alt = '';
+    fly.style.width = from.width + 'px';
+    fly.style.height = from.height + 'px';
+    fly.style.transform = 'translate(' + from.left + 'px,' + from.top + 'px)';
+    document.body.appendChild(fly);
+    cardImg.style.visibility = 'hidden';
+    inv.classList.remove('is-hidden');
+    intro.classList.add('is-leaving');
+
+    const sx = to.width / from.width, sy = to.height / from.height;
+    const end = 'translate(' + to.left + 'px,' + to.top + 'px) scale(' + sx + ',' + sy + ')';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fly.style.transition = reduce ? 'none' : 'transform 1.2s cubic-bezier(.55,0,.15,1)';
+      fly.style.transform = end;
+    }));
+    later(() => {
+      heroImg.classList.add('shown');
+      requestAnimationFrame(() => {
+        fly.remove();
+        intro.hidden = true;
+        html.classList.remove('locked');
+        inv.classList.add('is-ready');
+        state = 'done';
+      });
+    }, reduce ? 80 : 1300);
+  }
+  intro.addEventListener('click', () => { if (state === 'open') { timers.forEach(clearTimeout); timers = []; reveal(); } });
+
+  /* ---- Volver a ver el sobre ---- */
+  function replay() {
+    if (state !== 'done') return;
+    window.scrollTo(0, 0);
+    html.classList.add('locked');
+    heroImg.classList.remove('shown');
+    inv.classList.add('is-hidden'); inv.classList.remove('is-ready');
+    intro.classList.add('no-anim');
+    intro.hidden = false;
+    intro.classList.remove('is-leaving');
+    scene.classList.remove('is-opening', 'is-open');
+    cardImg.style.visibility = '';
+    seal.disabled = false; seal.removeAttribute('aria-hidden');
+    ballOn = true; state = 'closed';
+    requestAnimationFrame(() => requestAnimationFrame(() => intro.classList.remove('no-anim')));
+  }
+
+  seal.addEventListener('click', open);
+  $('replay').addEventListener('click', replay);
+})();
+</script>
+
+</body></html>
