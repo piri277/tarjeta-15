@@ -3,7 +3,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Poppins:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Italiana&family=Tillana:wght@400;500;600;700&display=swap">
 <style>
 /* Concepto: pizarra negra, papel claro y rosa fuerte, como la invitación de Angelina.
    Primero un sobre blanco perlado con forro rosa y sello de bola disco plateada.
@@ -20,7 +20,8 @@
   --pink-lo: #c2006f;
 
   --font-display: 'Italiana', 'Didot', 'Bodoni 72', Georgia, serif;
-  --font-ui: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-script: 'Moontime', 'Great Vibes', 'Brush Script MT', cursive;
+  --font-ui: 'Tillana', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --w: min(88vw, 440px, calc((100dvh - 140px) / 1.25));
   --h: calc(var(--w) * 2 / 3);
@@ -291,6 +292,11 @@ img { display: block; max-width: 100%; height: auto; }
   font-size: clamp(29px, 8.6vw, 40px); line-height: 1.12; letter-spacing: .04em; text-transform: uppercase;
   text-wrap: balance;
 }
+.h2.script {
+  font-family: var(--font-script); text-transform: none; letter-spacing: 0;
+  color: var(--pink); font-size: clamp(44px, 13.5vw, 64px); line-height: 1.02;
+}
+.p.msg { max-width: 34ch; }
 .p {
   margin: 18px auto 0; max-width: 30ch;
   font-size: clamp(15.5px, 4.3vw, 18px); line-height: 1.62; font-weight: 400;
@@ -493,8 +499,9 @@ img { display: block; max-width: 100%; height: auto; }
       <img class="star s5" src="assets/estrella.webp" alt="" width="164" height="160">
       <img class="baby" src="assets/bebe.webp" alt="Angelina de bebé, en blanco y negro" width="528" height="882">
     </div>
-    <h2 class="h2 rv" id="t-msg">Quince años, mil sueños por cumplir</h2>
-    <p class="p rv">Quince años de sueños, sonrisas y momentos inolvidables. Hoy comienza una nueva etapa llena de ilusiones, y quiero compartir esta alegría con las personas que hacen mi vida especial.</p>
+    <h2 class="h2 script rv" id="t-msg">15 años por cumplir</h2>
+    <p class="p msg rv">Hace quince años comenzó un hermoso cuento, una historia llena de amor, sueños, sonrisas y momentos inolvidables que han iluminado cada paso de mi camino...</p>
+    <p class="p msg rv">Hoy, como una princesa que por fin se atreve a salir de su castillo para descubrir el mundo, dejo atrás mi infancia y abro las puertas de una nueva etapa, llena de sueños por cumplir, ilusiones por vivir y nuevas aventuras por descubrir.</p>
   </section>
 
   <section class="sec dark rec-sec" aria-labelledby="t-rec">
