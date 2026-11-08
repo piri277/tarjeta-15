@@ -330,14 +330,18 @@ img { display: block; max-width: 100%; height: auto; }
 
 /* Recepción */
 .rec {
-  position: relative; width: min(100%, 400px); margin: 0 auto;
+  position: relative; width: min(100%, 500px); margin: 0 auto;
   background: #fff; color: #0a0a0a;
   box-shadow: 0 34px 60px -24px rgba(0, 0, 0, .85);
-  padding: 0 24px 40px;
+  padding: 0 24px 34px;
 }
-.rec .disco { width: 56%; margin: 0 auto 6px; }
-.rec .p { max-width: none; margin-top: 16px; color: #0a0a0a; }
-.rec .when { margin: 14px 0 0; font-size: clamp(17px, 4.8vw, 20px); font-weight: 500; line-height: 1.5; }
+.sec.rec-sec {
+  padding-left: max(10px, env(safe-area-inset-left, 0px));
+  padding-right: max(10px, env(safe-area-inset-right, 0px));
+}
+.rec .disco { width: 46%; margin: 0 auto 4px; }
+.rec .p { max-width: none; margin-top: 14px; color: #0a0a0a; font-weight: 400; }
+.rec .when { margin: 12px 0 0; font-size: clamp(16px, 4.5vw, 19px); font-weight: 400; line-height: 1.55; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   min-height: 48px; padding: 0 26px; margin-top: 26px;
@@ -493,7 +497,7 @@ img { display: block; max-width: 100%; height: auto; }
     <p class="p rv">Quince años de sueños, sonrisas y momentos inolvidables. Hoy comienza una nueva etapa llena de ilusiones, y quiero compartir esta alegría con las personas que hacen mi vida especial.</p>
   </section>
 
-  <section class="sec dark" aria-labelledby="t-rec">
+  <section class="sec dark rec-sec" aria-labelledby="t-rec">
     <div class="rec rv">
       <img class="disco" src="assets/disco.webp" alt="" width="520" height="272">
       <h2 class="h2" id="t-rec">Recepción</h2>
