@@ -392,6 +392,22 @@ img { display: block; max-width: 100%; height: auto; }
   text-align: center; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: rgba(251, 251, 250, .7);
 }
 .foot p { margin: 0; }
+
+/* Música */
+.music {
+  position: fixed; z-index: 100;
+  top: max(12px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px));
+  width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,.35);
+  background: rgba(6,6,6,.55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  color: #fff; display: grid; place-items: center; cursor: pointer; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.music svg { width: 22px; height: 22px; fill: currentColor; }
+.music .off { display: none; }
+.music[aria-pressed="false"] .on { display: none; }
+.music[aria-pressed="false"] .off { display: block; }
+.music:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+
 .replay {
   margin-top: 14px; padding: 12px 18px; min-height: 44px;
   background: none; border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px; cursor: pointer;
@@ -420,6 +436,11 @@ img { display: block; max-width: 100%; height: auto; }
 <canvas id="burst" aria-hidden="true"></canvas>
 
 <!-- ================= SOBRE ================= -->
+<audio id="bgm" src="assets/musica.mp3" loop preload="auto"></audio>
+<button class="music" id="music" type="button" aria-pressed="true" aria-label="Silenciar música">
+  <svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+  <svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4v2.2l2.5 2.5V12zM19 12a7 7 0 0 1-.9 3.4l1.5 1.5A9 9 0 0 0 21 12a9 9 0 0 0-7-8.8v2.1A7 7 0 0 1 19 12zM4.3 3 3 4.3 7.7 9H3v6h4l5 5v-6.7l4.3 4.3c-.7.5-1.4.9-2.3 1.1v2.1a9 9 0 0 0 3.5-1.7l2 2 1.3-1.3L4.3 3zM12 4 9.9 6.1 12 8.2V4z"/></svg>
+</button>
 <div class="intro" id="intro">
   <main class="scene" id="scene">
     <p class="eyebrow">Tienes una invitación</p>
@@ -499,7 +520,7 @@ img { display: block; max-width: 100%; height: auto; }
       <img class="star s5" src="assets/estrella.webp" alt="" width="164" height="160">
       <img class="baby" src="assets/bebe.webp" alt="Angelina de bebé, en blanco y negro" width="528" height="882">
     </div>
-    <h2 class="h2 script rv" id="t-msg">Quince años, mil sueños por cumplir</h2>
+    <h2 class="h2 script rv" id="t-msg">Quince años, mil sueños por cumplir!</h2>
     <p class="p msg rv">Hace quince años comenzó un hermoso cuento, una historia llena de amor, sueños, sonrisas y momentos inolvidables que han iluminado cada paso de mi camino...</p>
     <p class="p msg rv">Hoy, como una princesa que por fin se atreve a salir de su castillo para descubrir el mundo, dejo atrás mi infancia y abro las puertas de una nueva etapa, llena de sueños por cumplir, ilusiones por vivir y nuevas aventuras por descubrir.</p>
   </section>
@@ -825,6 +846,42 @@ img { display: block; max-width: 100%; height: auto; }
     ballOn = true; state = 'closed';
     requestAnimationFrame(() => requestAnimationFrame(() => intro.classList.remove('no-anim')));
   }
+
+
+  /* ---- Música de fondo ---- */
+  const bgm = $('bgm'), musicBtn = $('music');
+  let wantMusic = true, fadeId = 0;
+  function fadeTo(v, ms) {
+    cancelAnimationFrame(fadeId);
+    const v0 = bgm.volume, t0 = performance.now();
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / ms);
+      bgm.volume = Math.max(0, Math.min(1, v0 + (v - v0) * k));
+      if (k < 1) fadeId = requestAnimationFrame(step);
+    };
+    fadeId = requestAnimationFrame(step);
+  }
+  function playMusic() {
+    if (!wantMusic || !bgm.paused) return Promise.resolve();
+    bgm.volume = 0;
+    return bgm.play().then(() => { fadeTo(.85, 1800); disarm(); }).catch(() => {});
+  }
+  const gestureEvents = ['pointerdown', 'touchend', 'click', 'keydown'];
+  function onGesture() { playMusic(); }
+  function disarm() { gestureEvents.forEach((e) => window.removeEventListener(e, onGesture, true)); }
+  gestureEvents.forEach((e) => window.addEventListener(e, onGesture, true));
+  playMusic();   // si el navegador lo permite, suena apenas carga; si no, arranca con el primer toque
+  musicBtn.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    wantMusic = !wantMusic;
+    musicBtn.setAttribute('aria-pressed', String(wantMusic));
+    musicBtn.setAttribute('aria-label', wantMusic ? 'Silenciar música' : 'Activar música');
+    if (wantMusic) { bgm.volume = 0; bgm.play().then(() => fadeTo(.85, 600)).catch(() => {}); }
+    else { fadeTo(0, 400); setTimeout(() => { if (!wantMusic) bgm.pause(); }, 450); }
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) bgm.pause(); else if (wantMusic && bgm.currentTime > 0) bgm.play().catch(() => {});
+  });
 
   seal.addEventListener('click', open);
   $('replay').addEventListener('click', replay);
